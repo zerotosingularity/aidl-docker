@@ -63,6 +63,6 @@ RUN jupyter notebook --generate-config --allow-root && \
 COPY run_jupyter.sh /root/
 
 # Expose Ports
-EXPOSE 8888
+EXPOSE 6006 8888
 
 ENTRYPOINT ["jupyter", "notebook", "--allow-root"]
