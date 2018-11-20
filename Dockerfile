@@ -1,9 +1,3 @@
-# Fast.ai - Dockerfile
-
-# Inspired by - https://github.com/MattKleinsmith/dockerfiles/blob/master/fastai/Dockerfile
-# Run Jupyter script was seen at: Floydhub - dl-docker: https://github.com/floydhub/dl-docker/blob/master/run_jupyter.sh
-# Thanks to Seppe De Loore for the initial fastai installation steps when we needed them.
-
 # Base image
 FROM nvidia/cuda:9.2-runtime-ubuntu18.04
 
@@ -24,6 +18,7 @@ RUN apt-get update --fix-missing && apt-get install -y \
 	wget \
 && rm -rf /var/lib/apt/lists/*
 
+# Install Anaconda
 RUN wget --quiet https://repo.anaconda.com/archive/Anaconda3-5.3.0-Linux-x86_64.sh -O ~/anaconda.sh && \
     /bin/bash ~/anaconda.sh -b -p /opt/conda && \
     rm ~/anaconda.sh && \
@@ -41,7 +36,6 @@ WORKDIR /code
 
 
 # Install all packages
-# Notes:
 ## Install Python 3.6 because Tensorflow is not supported on 3.7
 ## Uninstall Notebook and force version 5.6: https://github.com/jupyter/notebook/issues/3946 
 RUN conda install python=3.6 -y && \
