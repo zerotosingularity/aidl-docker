@@ -51,7 +51,7 @@ RUN conda install python=3.6 -y && \
 	conda install -c fastai torchvision-nightly -y && \
 	conda install -c fastai fastai -y && \
 	conda install jupyter -y && \
-	pip uninstall notebook && \ 
+	pip uninstall notebook -y && \
 	pip install notebook==5.6.0 && \
 	pip install tensorflow-gpu 
 
