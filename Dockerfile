@@ -36,10 +36,8 @@ WORKDIR /code
 
 
 # Install all packages
-## Install Python 3.6 because Tensorflow is not supported on 3.7
 ## Uninstall Notebook and force version 5.6: https://github.com/jupyter/notebook/issues/3946 
-RUN conda install python=3.6 -y && \
-	apt-get install -y libjpeg-turbo8 && \
+RUN apt-get install -y libjpeg-turbo8 && \
 	pip install --upgrade pip && \
 	conda install -c pytorch pytorch-nightly cuda92 -y && conda clean -ya  &&\
 	conda install -c fastai torchvision-nightly -y && \
@@ -47,7 +45,10 @@ RUN conda install python=3.6 -y && \
 	conda install jupyter -y && \
 	pip uninstall notebook -y && \
 	pip install notebook==5.6.0 && \
-	pip install tensorflow-gpu 
+	apt-get install -y python-opengl
+
+RUN conda list > conda_info.txt && \
+	pip list > pip_info.txt
 
 RUN jupyter notebook --generate-config --allow-root && \
 	echo "c.NotebookApp.ip = '*'" >> ~/.jupyter/jupyter_notebook_config.py && \
