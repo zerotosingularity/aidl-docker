@@ -31,24 +31,22 @@ RUN . /opt/conda/etc/profile.d/conda.sh
 ENV PATH /opt/conda/bin:$PATH
 ENV CONDA_AUTO_UPDATE_CONDA=false
 
-COPY . /code
 WORKDIR /code
-
 
 # Install all packages
 ## Uninstall Notebook and force version 5.6: https://github.com/jupyter/notebook/issues/3946 
 RUN apt-get install -y libjpeg-turbo8 && \
 	pip install --upgrade pip && \
-	conda install -c pytorch pytorch-nightly cuda92 -y && conda clean -ya  &&\
-	conda install -c fastai torchvision-nightly -y && \
-	conda install -c fastai fastai -y && \
+	conda uninstall -y pillow libjpeg-turbo && \
+	conda install -c fastai/label/test pillow && \
 	conda install jupyter -y && \
+	conda install -c pytorch -c fastai fastai -y && \
 	pip uninstall notebook -y && \
-	pip install notebook==5.6.0 && \
-	apt-get install -y python-opengl
+	pip install notebook==5.6.0
 
-RUN conda list > conda_info.txt && \
-	pip list > pip_info.txt
+#RUN apt-get install -y build-essential software-properties-common && \
+#RUN 
+#	CC="cc -mavx2" pip install --no-cache-dir -U --force-reinstall --no-binary :all: --compile pillow-simd
 
 RUN jupyter notebook --generate-config --allow-root && \
 	echo "c.NotebookApp.ip = '*'" >> ~/.jupyter/jupyter_notebook_config.py && \
