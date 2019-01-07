@@ -1,5 +1,5 @@
 # Base image
-FROM nvidia/cuda:9.2-runtime-ubuntu18.04
+FROM nvidia/cuda:10.0-runtime-ubuntu18.04
 
 SHELL ["/bin/bash", "-c"]
 
@@ -41,6 +41,7 @@ RUN apt-get install -y libjpeg-turbo8 && \
 	conda install -c fastai/label/test pillow && \
 	conda install jupyter -y && \
 	conda install -c pytorch -c fastai fastai -y && \
+	conda update --all -y && \
 	pip uninstall notebook -y && \
 	pip install notebook==5.6.0
 
@@ -49,7 +50,7 @@ RUN apt-get install -y libjpeg-turbo8 && \
 #	CC="cc -mavx2" pip install --no-cache-dir -U --force-reinstall --no-binary :all: --compile pillow-simd
 
 RUN jupyter notebook --generate-config --allow-root && \
-	echo "c.NotebookApp.ip = '*'" >> ~/.jupyter/jupyter_notebook_config.py && \
+	echo "c.NotebookApp.ip = '0.0.0.0'" >> ~/.jupyter/jupyter_notebook_config.py && \
 	echo "c.NotebookApp.open_browser = False" >> ~/.jupyter_notebook_config.py
 
 # Jupyter has issues running directly: https://github.com/ipython/ipython/issues/7062
