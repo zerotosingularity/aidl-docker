@@ -3,7 +3,7 @@ AI & Deep learning docker container(s) to go...
 
 # Versions
 
-Tensorflow 2.0.0-alpha0
+Tensorflow: 2.0.0-alpha0
 
 Fastai: 1.0.51
 
