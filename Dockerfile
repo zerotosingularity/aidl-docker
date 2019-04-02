@@ -1,5 +1,5 @@
 # Base image
-FROM nvidia/cuda:10.0-runtime-ubuntu18.04
+FROM nvidia/cuda:10.1-runtime-ubuntu18.04
 
 SHELL ["/bin/bash", "-c"]
 
@@ -19,7 +19,7 @@ RUN apt-get update --fix-missing && apt-get install -y \
 && rm -rf /var/lib/apt/lists/*
 
 # Install Anaconda
-RUN wget --quiet https://repo.anaconda.com/archive/Anaconda3-5.3.0-Linux-x86_64.sh -O ~/anaconda.sh && \
+RUN wget --quiet https://repo.anaconda.com/archive/Anaconda3-5.3.1-Linux-x86_64.sh -O ~/anaconda.sh && \
     /bin/bash ~/anaconda.sh -b -p /opt/conda && \
     rm ~/anaconda.sh && \
     ln -s /opt/conda/etc/profile.d/conda.sh /etc/profile.d/conda.sh && \
@@ -33,17 +33,19 @@ ENV CONDA_AUTO_UPDATE_CONDA=false
 
 WORKDIR /code
 
+RUN conda update -n base -c defaults conda -y
+
 # Install all packages
 ## Uninstall Notebook and force version 5.6: https://github.com/jupyter/notebook/issues/3946 
 RUN apt-get install -y libjpeg-turbo8 && \
 	pip install --upgrade pip && \
-	conda uninstall -y pillow libjpeg-turbo && \
+	conda uninstall -y pillow && \
 	conda install -c fastai/label/test pillow && \
 	conda install jupyter -y && \
 	conda install -c pytorch -c fastai fastai -y && \
-	conda update --all -y && \
-	pip uninstall notebook -y && \
-	pip install notebook==5.6.0
+	conda update --all -y 
+
+RUN pip install tensorflow-gpu==2.0.0-alpha0
 
 #RUN apt-get install -y build-essential software-properties-common && \
 #RUN 
