@@ -1,7 +1,12 @@
 # aidl-docker
 AI & Deep learning docker container(s) to go...
 
-## License
+# Versions
+
+Tensorflow 2.0.0-alpha0
+Fastai: 1.0.51
+
+# License
 
 This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
 
