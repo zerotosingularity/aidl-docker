@@ -33,6 +33,7 @@ docker run --runtime=nvidia -it -p 8888:8888 -v $HOME/.fastai:/root/.fastai -v $
 4. Kaggle (Optional)
 If you want to use the Kaggle command line tools:
 * place the kaggle.json file in the ~/.kaggle/ folder
+  * Go to Kaggle.com -> "My Account" -> "Create New API Token"
 * add another volume when starting the container: -v ~/.kaggle:/YOUR_USER/.kaggle
   * YOUR_USER should be changed to your actual username, because the target volume needs to be an absolute path
   * full example: docker run --runtime=nvidia -it -p 8888:8888 -v $HOME/.fastai:/root/.fastai -v $(pwd):/code/fastai -v ~/.kaggle:/YOUR_USER/.kaggle --ipc=host zerotosingularity/fastai_v3:latest
