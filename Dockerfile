@@ -33,6 +33,8 @@ ENV CONDA_AUTO_UPDATE_CONDA=false
 
 WORKDIR /code
 
+RUN mkdir -p ~/.kaggle
+
 RUN conda update -n base -c defaults conda -y
 
 # Install all packages
@@ -43,7 +45,8 @@ RUN apt-get install -y libjpeg-turbo8 && \
 	conda install -c fastai/label/test pillow && \
 	conda install jupyter -y && \
 	conda install -c pytorch -c fastai fastai -y && \
-	conda update --all -y 
+	conda update --all -y && \
+	pip install --upgrade kaggle
 
 RUN pip install tensorflow-gpu==2.0.0-alpha0
 
