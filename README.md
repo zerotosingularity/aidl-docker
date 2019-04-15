@@ -38,8 +38,9 @@ If you want to use the Kaggle command line tools:
   * YOUR_USER should be changed to your actual username, because the target volume needs to be an absolute path
   * full example: docker run --runtime=nvidia -it -p 8888:8888 -v $HOME/.fastai:/root/.fastai -v $(pwd):/code/fastai -v ~/.kaggle:/YOUR_USER/.kaggle --ipc=host zerotosingularity/fastai_v3:latest
 
-It uses two volumes:
+It uses three volumes:
 * /root/.fastai: store the data for later use, so you don't have to redownload every time
+* /root/.torch: store the data for later use, so you don't have to redownload every time
 * /code/fastai: maps to the current (course-v3) repository, which lets you save changes over time, and simply pull updates
 * (Optional Kaggle volume as described in 4. Kaggle (Optional))
 
