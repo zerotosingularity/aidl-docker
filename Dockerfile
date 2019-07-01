@@ -2,7 +2,7 @@
 FROM nvidia/cuda:10.1-runtime-ubuntu18.04
 
 ARG fastai_version
-ARG torch_version
+ARG torch_version=1.1
 ARG tensorflow_version
 
 SHELL ["/bin/bash", "-c"]
@@ -20,6 +20,10 @@ RUN apt-get update --fix-missing && apt-get install -y \
 	unzip \
 	vim \
 	wget \
+	python3-crypto \
+	mercurial \
+	bcrypt \
+	g++ \
 && rm -rf /var/lib/apt/lists/*
 
 # Install Anaconda
@@ -54,24 +58,35 @@ RUN jupyter notebook --generate-config --allow-root && \
 COPY run_jupyter.sh /root/
 
 # Install Latest Tensorflow GPU
-RUN pip install tensorflow-gpu==$tensorflow_version
+# RUN pip install tensorflow-gpu==$tensorflow_version
 
 # Install all packages
-RUN apt-get install -y libjpeg-turbo8 && \
-    pip install --upgrade pip && \
-    conda uninstall -y pillow && \
+RUN pip install --upgrade pip && \
+    pip install --upgrade PyHamcrest>=1.9.0 && \
+    pip install --upgrade blowfish && \
+    pip install --upgrade fire && \
+    pip install --upgrade bcrypt && \
+    # Use monkey-patched cryptacular: https://bitbucket.org/dholth/cryptacular/issues/11/not-installing-on-ubuntu-1804
+    pip install -e hg+https://bitbucket.org/dholth/cryptacular@cb96fb3#egg=cryptacular && \
+    # pip install --upgrade cryptacular && \
+    apt-get install -y libjpeg-turbo8 && \
+#    conda uninstall -y pillow && \
     conda install -c fastai/label/test pillow && \
     conda install jupyter -y && \
     pip install torch==$torch_version torchvision && \
     conda install -c pytorch -c fastai fastai=$fastai_version -y && \
     conda install -y -c haasad eidl7zip && \
     conda install -y nbconvert && \
+    conda install -y bcrypt && \
     conda install -y fire -c conda-forge && \
     conda update --all -y && \
     pip install --upgrade kaggle && \
-    pip install pdl
+    pip install --upgrade pdl && \
+    pip install --upgrade apex && \
+    pip install fastprogress>=1.0.18
 
 # Expose Ports
 EXPOSE 6006 8888
 
 ENTRYPOINT ["jupyter", "notebook", "--allow-root"]
+
