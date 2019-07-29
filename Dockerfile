@@ -2,7 +2,7 @@
 FROM nvidia/cuda:10.1-runtime-ubuntu18.04
 
 ARG fastai_version
-ARG torch_version=1.1
+ARG torch_version
 ARG tensorflow_version
 
 SHELL ["/bin/bash", "-c"]
@@ -27,7 +27,7 @@ RUN apt-get update --fix-missing && apt-get install -y \
 && rm -rf /var/lib/apt/lists/*
 
 # Install Anaconda
-RUN wget --quiet https://repo.anaconda.com/archive/Anaconda3-5.3.1-Linux-x86_64.sh -O ~/anaconda.sh && \
+RUN wget --quiet https://repo.anaconda.com/archive/Anaconda3-2019.03-Linux-x86_64.sh -O ~/anaconda.sh && \
     /bin/bash ~/anaconda.sh -b -p /opt/conda && \
     rm ~/anaconda.sh && \
     ln -s /opt/conda/etc/profile.d/conda.sh /etc/profile.d/conda.sh && \
@@ -43,7 +43,7 @@ WORKDIR /code
 
 RUN mkdir -p ~/.kaggle
 
-RUN conda update -n base -c defaults conda -y
+RUN conda update -n base -c defaults conda -y && conda update conda-build
 
 
 #RUN apt-get install -y build-essential software-properties-common && \
@@ -57,33 +57,27 @@ RUN jupyter notebook --generate-config --allow-root && \
 # Jupyter has issues running directly: https://github.com/ipython/ipython/issues/7062
 COPY run_jupyter.sh /root/
 
-# Install Latest Tensorflow GPU
-# RUN pip install tensorflow-gpu==$tensorflow_version
-
 # Install all packages
-RUN pip install --upgrade pip && \
-    pip install --upgrade PyHamcrest>=1.9.0 && \
-    pip install --upgrade blowfish && \
-    pip install --upgrade fire && \
-    pip install --upgrade bcrypt && \
-    # Use monkey-patched cryptacular: https://bitbucket.org/dholth/cryptacular/issues/11/not-installing-on-ubuntu-1804
-    pip install -e hg+https://bitbucket.org/dholth/cryptacular@cb96fb3#egg=cryptacular && \
-    # pip install --upgrade cryptacular && \
-    apt-get install -y libjpeg-turbo8 && \
-#    conda uninstall -y pillow && \
-    conda install -c fastai/label/test pillow && \
-    conda install jupyter -y && \
-    pip install torch==$torch_version torchvision && \
-    conda install -c pytorch -c fastai fastai=$fastai_version -y && \
-    conda install -y -c haasad eidl7zip && \
-    conda install -y nbconvert && \
-    conda install -y bcrypt && \
-    conda install -y fire -c conda-forge && \
-    conda update --all -y && \
-    pip install --upgrade kaggle && \
-    pip install --upgrade pdl && \
-    pip install --upgrade apex && \
-    pip install fastprogress>=1.0.18
+RUN apt-get install -y libjpeg-turbo8
+RUN pip install --upgrade pip
+#RUN pip install twisted
+
+#RUN pip install wrapt==1.11.0
+
+#RUN pip install tensorflow-gpu==$tensorflow_version
+
+RUN conda uninstall -y pillow
+RUN conda install -c fastai/label/test pillow
+RUN conda install jupyter -y
+RUN pip install nvidia-ml-py3
+RUN pip install torch==$torch_version torchvision
+RUN conda install -c pytorch -c fastai fastai=$fastai_version -y
+RUN conda install -y -c haasad eidl7zip
+RUN conda install -y nbconvert
+RUN conda install -y fire -c conda-forge
+RUN conda update --all -y
+RUN pip install --upgrade kaggle
+RUN pip install pdl
 
 # Expose Ports
 EXPOSE 6006 8888
